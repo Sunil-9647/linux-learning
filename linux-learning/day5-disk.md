@@ -3,22 +3,22 @@
 ### Basic Commands and What They Do
 
 #### `df` Disk Free:
-df command is used to display information about the file systems on your Linux system. It provides a snapshot of disk usage, showing the total space, used space, available space, and the percentage of use for each mounted file system.
+df command is used to display information about the file systems on your Linux system. It provides a snapshot of disk usage, showing the total space, used space, available space, and the percentage of use for each mounted file system.<br>
 Syntax:
 	df [options] filename
 
 #### `du` Disk Usage:
-du command is used to analyze and report on disk usage within directories and files. Whether you’re trying to manage disk space efficiently, or simply gain insights into storage consumption.
+du command is used to analyze and report on disk usage within directories and files. Whether you’re trying to manage disk space efficiently, or simply gain insights into storage consumption.<br>
 Syntax:
 	du [options] filename
 
 #### `free`:
-free command is used to displays the total amount of free space available along with the amount of memory used and swap memory in the system.
+free command is used to displays the total amount of free space available along with the amount of memory used and swap memory in the system.<br>
 Syntax:
 	free [options]
 
 #### `journalctl`:
-journalctl command is used to view and manage system logs maintained by the systemd-journald service. It provides a centralized and efficient way to access and analyze log data.
+journalctl command is used to view and manage system logs maintained by the systemd-journald service. It provides a centralized and efficient way to access and analyze log data.<br>
 Syntax:
 	journalctl [options] [matches]
 
