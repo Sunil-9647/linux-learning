@@ -1,9 +1,9 @@
 ## Day 10 - CI/CD Fundamentals
 
 ### What is CI/CD?
-CI/CD stands for __Continuous Integration__ and __Continuous Delivery__ /__Continuous Deployment__.
+CI/CD stands for __Continuous Integration__ and __Continuous Delivery/Continuous Deployment__.
 
-CI/CD is a process, not a tool.>br>
+CI/CD is a process, not a tool.<br>
 It's main purpose is to deliver software changes safely, repeatedly, and automatically without breaking production.
 
 Before CI/CD, software teams:
@@ -37,7 +37,7 @@ CI/CD solves these problems by:
 ### What is Continuous Integration (CI)?
 Developers frequently push code to a central repository where it is push code to a central repository where it is automatically built and tested to detect issues early.
 
-CI answers one main question:
+CI answers one main question:<br>
     “Is this code safe to merge with the existing codebase?”
 
 What CI does in real life:
@@ -48,7 +48,7 @@ What CI does in real life:
 + Checks basic quality rules
 + Stops immediately if something fails
 
-*CI does NOT deploy to production*.
+*CI does NOT deploy to production*.<br>
 *CI’s job is to protect the codebase*.
 
 If CI fails:
@@ -78,7 +78,7 @@ __Continuous Deployment__
 	* SaaS products
 	* High-automation teams
 
-Important Point:
+Important Point:<br>
     “CD can mean Delivery or Deployment depending on company risk tolerance.”
 
 ---
@@ -137,9 +137,9 @@ Explanation:
 
 Linux does not allow scripts to run without execute permission.
 
-In CI:
-	+ Scripts often fail due to missing permissions
-	+ This is a very common real-world issue
+In CI:<br>
++ Scripts often fail due to missing permissions
++ This is a very common real-world issue
 
 Giving execute permission ensures CI can run scripts.
 
@@ -172,14 +172,14 @@ Note:
 ### Why CI Always Starts from a Clean Workspace?
 
 CI does not trust:
-	+ Developer machines
-	+ Cached files
-	+ Previous runs
++ Developer machines
++ Cached files
++ Previous runs
 
 Starting fresh ensures:
-	+ Reproducibility
-	+ No hidden dependencies
-	+ Consistent results
++ Reproducibility
++ No hidden dependencies
++ Consistent results
 
 If code works only on one machine, it is not production-ready.
 
@@ -189,27 +189,27 @@ If code works only on one machine, it is not production-ready.
 
 Q1: Why do CI pipelines fail fast?
 
-Answer:
+Answer:<br>
 To stop broken code early, save resources, and prevent invalid test results.
 
 Q2: What happens if tests fail in CI?
 
-Answer:
+Answer:<br>
 The pipeline stops and code is blocked from merging or deployment.
 
 Q3: Why is CI important before deployment?
 
-Answer:
+Answer:<br>
 CI ensures code quality and stability before reaching any environment.
 
 Q4: How do CI tools work internally?
 
-Answer:
+Answer:<br>
 They create a clean environment, run scripts, and check exit codes.
 
 Q5: Why are shell scripts important in CI/CD?
 
-Answer:
+Answer:<br>
 Because CI tools execute scripts; understanding scripts means understanding CI.
 
 ---
