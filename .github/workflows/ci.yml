@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, linux-branch ]
+  pull_request:
+    branches: [ main, linux-branch ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up permissions for scripts
+        run: chmod +x ./cicd-learning/ci-simulation/*.sh
+
+      - name: Run build
+        working-directory: ./cicd-learning/ci-simulation
+        run: ./build.sh
+
+      - name: Run tests
+        working-directory: ./cicd-learning/ci-simulation
+        run: ./test.sh
+
+      - name: Upload logs (artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-logs
+          path: ./cicd-learning/ci-simulation/*.log
