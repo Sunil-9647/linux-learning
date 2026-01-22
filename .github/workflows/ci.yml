@@ -45,6 +45,9 @@ jobs:
       - name: Run build
         run: ./build.sh
 
+      - name: Clean old artifacts
+        run: rm -rf ci-artifacts dist
+
       - name: package build artifact
         run: ./package.sh
 
