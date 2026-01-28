@@ -1,20 +1,17 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -e
+
+ARTIFACT_DIR="ci-artifacts"
+
+# clean old artifacts (VERY IMPORTANT)
+rm -rf "$ARTIFACT_DIR"
+mkdir -p "$ARTIFACT_DIR"
+
+ZIP_NAME="app-build-${GITHUB_SHA}.zip"
 
 echo "Packaging started..."
+zip -r "$ARTIFACT_DIR/$ZIP_NAME" dist
+echo "Packaging completed: $ARTIFACT_DIR/$ZIP_NAME"
 
-# Ensure build output exists
-test -d dist || { echo "ERROR: dist/ not found. Run build first."; exit 1; }
+ls -la "$ARTIFACT_DIR"
 
-# Prepare artifact folder
-mkdir -p ci-artifacts
-
-# Versioned artifact name using commit SHA if available
-SHA="${GITHUB_SHA:-local}"
-ARTIFACT_NAME="app-build-${SHA}.zip"
-
-# Create zip
-zip -r "ci-artifacts/${ARTIFACT_NAME}" dist >/dev/null
-
-echo "Packaging completed: ci-artifacts/${ARTIFACT_NAME}"
-ls -l ci-artifacts

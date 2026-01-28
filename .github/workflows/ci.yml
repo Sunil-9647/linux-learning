@@ -48,14 +48,25 @@ jobs:
       - name: Clean old artifacts
         run: rm -rf ci-artifacts
 
+      - name: Compute version
+        run: echo "VERSION=v-${GITHUB_SHA::7}" >> $GITHUB_ENV
+
       - name: package build artifact
         run: ./package.sh
+
+      - name: Rename build zip with version
+        run: |
+          set -e
+          ZIP_FILE="$(ls -1 ci-artifacts/*.zip | head -n 1)"
+          echo "Found zip: $ZIP_FILE"
+          mv "$ZIP_FILE" "ci-artifacts/app-${VERSION}.zip"
+          ls -la ci-artifacts
 
       - name: upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifact
-          path: ./cicd-learning/ci-simulation/ci-artifacts/*.zip
+          name: build-artifact-${{ env.VERSION }}
+          path: ./cicd-learning/ci-simulation/ci-artifacts/app-${{ env.VERSION }}.zip
           if-no-files-found: error
 
   test:
@@ -82,82 +93,3 @@ jobs:
           name: ci-logs
           path: ./cicd-learning/ci-simulation/*.log
           if-no-file-found: warn
-
-
-  deploy-dev:
-    name: Deploy to DEV
-    runs-on: ubuntu-latest
-    needs: [ build, test ]
-    environment: dev
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact
-          path: artifact
-
-      - name: Deploy to DEV using secret path
-        env:
-         DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-        run: |
-         sudo apt-get update
-         sudo apt-get install -y unzip
-         ZIP_FILE="$(ls -1 artifact/*.zip | head -n 1)"
-         unzip -o "${ZIP_FILE}" -d extracted
-         mkdir -p "$DEPLOY_PATH"
-         cp -r extracted/dist "$DEPLOY_PATH/"
-         echo "DEV deployed to path: (hidden)"
-         find "$DEPLOY_PATH" -maxdepth 3 -type f -print -exec cat {} \;
-
-
-  deploy-staging:
-    name: Deploy to STAGING
-    runs-on: ubuntu-latest
-    needs: [ deploy-dev ]
-    environment: staging
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact
-          path: artifact
-
-      - name: Deploy to STAGING using secret path
-        env:
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y unzip
-          ZIP_FILE="$(ls -1 artifact/*.zip | head -n 1)"
-          unzip -o "${ZIP_FILE}" -d extracted
-          mkdir -p "$DEPLOY_PATH"
-          cp -r extracted/dist "$DEPLOY_PATH/"
-          echo "STAGING deployed to path: (hidden)"
-          find "$DEPLOY_PATH" -maxdepth 3 -type f -print -exec cat {} \;
-
-
-  deploy-prod:
-    name: Deploy to PROD (Manual Approval)
-    runs-on: ubuntu-latest
-    needs: [ deploy-staging ]
-    environment: production
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact
-          path: artifact
-
-      - name: Deploy to PROD using secret path
-        env:
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y unzip
-          ZIP_FILE="$(ls -1 artifact/*.zip | head -n 1)"
-          unzip -o "${ZIP_FILE}" -d extracted
-          mkdir -p "$DEPLOY_PATH"
-          cp -r extracted/dist "$DEPLOY_PATH/"
-          echo "PROD deployed to path: (hidden)"
-          find "$DEPLOY_PATH" -maxdepth 3 -type f -print -exec cat {} \;
-

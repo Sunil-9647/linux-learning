@@ -1,0 +1,44 @@
+name: CD - Deploy to DEV
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Artifact version to deploy (example: v-1a2b3c4)"
+        required: true
+        type: string
+
+jobs:
+  deploy-dev:
+    name: Deploy to DEV
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Download versioned build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact-${{ inputs.version }}
+          path: artifact
+
+      - name: Deploy to DEV using secret path
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -e
+          sudo apt-get update
+          sudo apt-get install -y unzip
+
+          ZIP_FILE="artifact/app-${VERSION}.zip"
+          if [ ! -f "$ZIP_FILE" ]; then
+            echo "ERROR: Expected artifact zip not found: $ZIP_FILE"
+            echo "Available files:"
+            ls -la artifact || true
+            exit 1
+          fi
+
+          unzip -o "$ZIP_FILE" -d extracted
+          mkdir -p "$DEPLOY_PATH/$VERSION"
+          cp -r extracted/dist "$DEPLOY_PATH/$VERSION/"
+          echo "DEV deployed version: $VERSION (path hidden)"
