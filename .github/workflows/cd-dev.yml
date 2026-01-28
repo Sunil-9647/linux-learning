@@ -1,15 +1,13 @@
 name: CD - Deploy to DEV
 
+permissions:
+  actions: read
+  contents: read
+  
 on:
   workflow_run:
     workflows: ["CI"]
-    types:
-      - completed
-    inputs:
-      version:
-        description: "Artifact version to deploy (example: v-9c0f9c9)"
-        required: true
-        type: string
+    types: [completed]
 
 jobs:
   deploy-dev:
@@ -26,7 +24,7 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
           path: artifact
 
-      - name: Show download files
+      - name: Show downloaded files
         run: |
           echo "Downloaded artifact contents:"
           ls -la artifact
@@ -36,10 +34,13 @@ jobs:
           set -e
           ZIP_FILE="$(ls -1 artifact/*.zip | head -n 1)"
           echo "ZIP_FILE=$ZIP_FILE" >> $GITHUB_ENV
-          # Example: app-build-<sha>.zip  -> capture <sha>
+          
+          # This will become VERSION like: app-v-9c0f9c9
           VERSION="$(basename "$ZIP_FILE" .zip)"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          
           echo "Detected VERSION: $VERSION"
+          echo "VERSION=$VERSION"
 
       - name: Deploy to DEV using secret path
         env:

@@ -92,4 +92,4 @@ jobs:
         with:
           name: ci-logs
           path: ./cicd-learning/ci-simulation/*.log
-          if-no-file-found: warn
+          if-no-files-found: warn
