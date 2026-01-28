@@ -17,12 +17,14 @@ jobs:
     environment: dev
 
     steps:
-      - name: Download build artifact from CI run
-        uses: actions/download-artifact@v4
+      - name: Download artifact from triggering CI run
+        uses: dawidd6/action-download-artifact@v3
         with:
+          workflow: ci.yml
+          run_id: ${{ github.event.workflow_run.id }}
           name: build-artifact
-          run-id: ${{ github.event.workflow_run.id }}
           path: artifact
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Show downloaded files
         run: |
